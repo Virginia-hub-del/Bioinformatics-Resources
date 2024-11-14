@@ -30,8 +30,3 @@ Before running the scripts, ensure that you have the following installed:
 ```r
 install.packages(c("ggplot2", "edgeR"))
 BiocManager::install(c("biomaRt", "clusterProfiler", "PWMEnrich"))
-
-## Project Report
-
-You can view the full project report in PDF format [here](Bionformatics_Resources_project.pdf).
-
