@@ -1,5 +1,5 @@
 # Bioinformatics Resources: Introduction - RNA-seq Analysis of Invasive Breast Cancer
-[Download the Project PDF](Bioinformatics_Resources_project.pdf)
+
 ## Overview
 
 This project focuses on RNA-seq analysis of invasive breast cancer using data from TCGA (The Cancer Genome Atlas). The goal is to identify potential biomarkers for breast cancer by performing differential gene expression analysis, gene set enrichment analysis (Gene Ontology and KEGG), and transcription factor analysis.
