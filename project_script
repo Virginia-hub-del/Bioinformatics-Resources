@@ -1,16 +1,17 @@
 ##Introduction
-The analysis was conducted on the RData file Breast_invasive_carcinoma, which contains the following three data frames:
+#The analysis was conducted on the RData file Breast_invasive_carcinoma, which contains the following three data frames:
 
 raw_counts_df: contains raw RNA-seq counts;
 c_year_df: contains sample names and conditions (case or control);
 r_year_df: contains ENSEMBL gene IDs, lengths, and gene symbols.
-Task 1
+
+## Task 1
 # Load the RData file
 load("C:/Users/virgi/Desktop/Breast_invasive_carcinoma.RData")
-Task 2
-The first step was to update raw_count_df and r_anno_df by extracting only the coding genes. This process required connecting to the Ensembl database. The getBM function from the biomaRt package was used to perform the query, specifying the attributes and providing the values from r_anno_df.
 
-The results were then filtered to retain only protein-coding genes. Finally, raw_count_df and r_anno_df were filtered to include only the rows corresponding to these genes. The dimensions of both datasets were checked to confirm the filtering.
+## Task 2
+# The first step was to update raw_count_df and r_anno_df by extracting only the coding genes. This process required connecting to the Ensembl database. The getBM function from the biomaRt package was used to perform the query, specifying the attributes and providing the values from r_anno_df.
+# The results were then filtered to retain only protein-coding genes. Finally, raw_count_df and r_anno_df were filtered to include only the rows corresponding to these genes. The dimensions of both datasets were checked to confirm the filtering.
 
 library(biomaRt)
 library(tidyverse)
@@ -36,10 +37,10 @@ dim(raw_counts_df)
 dim(r_anno_df)
 dim(raw_counts_df_filt)
 dim(r_anno_df_filt)
-The results on the dimensions confirm that the filtering process was applied consistently across both data frames.
+# The results on the dimensions confirm that the filtering process was applied consistently across both data frames.
 
-Task 3 - Differential Expression Analysis
-Differential expression analysis was performed using the edgeR package. Initially, the raw count data were filtered to retain only genes with a raw count >20 in at least 5 cases or 5 control samples. Then, a DGElist was created, and the analysis selected up- and down-regulated genes using an adjusted p-value cutoff of 0.01, a log fold change ratio >1.5 for up-regulated genes and < -1.5 for down-regulated genes, and a log CPM >1.
+## Task 3 - Differential Expression Analysis
+# Differential expression analysis was performed using the edgeR package. Initially, the raw count data were filtered to retain only genes with a raw count >20 in at least 5 cases or 5 control samples. Then, a DGElist was created, and the analysis selected up- and down-regulated genes using an adjusted p-value cutoff of 0.01, a log fold change ratio >1.5 for up-regulated genes and < -1.5 for down-regulated genes, and a log CPM >1.
 
 count_thr <- 20
 repl_thr <- 5
@@ -87,9 +88,9 @@ DEGs$class[which(DEGs$logCPM > 1 & DEGs$logFC > 1.5)] = "+"
 DEGs$class[which(DEGs$logCPM > 1 & DEGs$logFC < (-1.5))] = '-'
 DEGs <- DEGs[order(DEGs$logFC, decreasing = T),]
 table(DEGs$class)
-The number of up-regulated (915) and down-regulated (903) genes is fairly balanced, indicating that similar numbers of genes are activated and repressed under the experimental conditions.
+# The number of up-regulated (915) and down-regulated (903) genes is fairly balanced, indicating that similar numbers of genes are activated and repressed under the experimental conditions.
 
-The Volcano Plot
+## The Volcano Plot
 # Volcano plot visualization
 input_df <- DEGs
 xlabel <- "log2 FC control vs tumor"
@@ -99,7 +100,7 @@ plot(input_df$logFC, -log(input_df$PValue, base = 10), xlab = xlabel, ylab = yla
      col = ifelse(input_df$class == "=", "grey70", ifelse(DEGs$class == "+", "#DF536B", "olivedrab4")),
      pch = 20, frame.plot = TRUE, cex = 0.8, main = "Volcano plot")
 abline(v = 0, lty = 2, col = "grey20")
-The Heatmap
+## The Heatmap
 # Heatmap visualization
 col <- rep('chartreuse4', nrow(c_anno_df))
 col[which(c_anno_df$condition == 'case')] <- 'burlywood3'
@@ -118,8 +119,8 @@ heatmap(scaled_subset_cpm,
         cexCol = 0.5,
         cexRow = 0.2,
         main = "Heatmap")
-Task 4 - Gene Set Enrichment Analysis
-The biomaRt package was again used to annotate the genes in DEGs with information from the Ensembl database. Gene set enrichment analysis was conducted, focusing on the Biological Process.
+## Task 4 - Gene Set Enrichment Analysis
+# The biomaRt package was again used to annotate the genes in DEGs with information from the Ensembl database. Gene set enrichment analysis was conducted, focusing on the Biological Process.
 
 library(org.Hs.eg.db)
 library(clusterProfiler)
@@ -150,4 +151,4 @@ heatplot(up_ego_BP, showCategory = 6)
 barplot(down_ego_BP, showCategory = 10)
 dotplot(down_ego_BP, showCategory = 10)
 heatplot(down_ego_BP, showCategory = 6)
-This helps visualize the functional roles of differentially expressed genes by identifying enriched Gene Ontology terms related to their biological processes.
+# This helps visualize the functional roles of differentially expressed genes by identifying enriched Gene Ontology terms related to their biological processes.
